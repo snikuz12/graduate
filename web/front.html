@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>출석 관리 시스템</title>
+</head>
+<body>
+<div id="main-container">
+  <section id="login-section">
+    <h1>로그인</h1>
+    <form id="login-form">
+      <div>
+        <label for="login-username">아이디:</label>
+        <input type="text" id="login-username" name="username" required>
+      </div>
+      <div>
+        <label for="login-password">비밀번호:</label>
+        <input type="password" id="login-password" name="password" required>
+      </div>
+      <button type="submit">로그인</button>
+    </form>
+    <button id="signup-button">회원가입</button>
+  </section>
+
+  <section id="signup-section" style="display: none;">
+    <h1>회원가입</h1>
+    <form id="signup-form" enctype="multipart/form-data">
+      <div>
+        <label for="signup-name">이름:</label>
+        <input type="text" id="signup-name" name="name" required>
+      </div>
+      <div>
+        <label for="signup-username">아이디:</label>
+        <input type="text" id="signup-username" name="username" required>
+      </div>
+      <div>
+        <label for="signup-password">비밀번호:</label>
+        <input type="password" id="signup-password" name="password" required>
+      </div>
+      <div>
+        <label for="signup-studentId">학번:</label>
+        <input type="text" id="signup-studentId" name="studentId" required>
+      </div>
+      <div>
+        <label for="signup-photos">얼굴 사진 업로드 (100장):</label>
+        <input type="file" id="signup-photos" name="photos" accept="image/*" multiple required>
+      </div>
+      <button type="submit">회원가입</button>
+    </form>
+  </section>
+</div>
+
+<script>
+document.getElementById('login-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
+
+  try {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, password })
+    });
+    const result = await response.text();
+    alert(result);
+  } catch (error) {
+    console.error('로그인 오류:', error);
+  }
+});
+
+document.getElementById('signup-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  
+  const name = document.getElementById('signup-name').value;
+  const username = document.getElementById('signup-username').value;
+  const password = document.getElementById('signup-password').value;
+  const studentId = document.getElementById('signup-studentId').value;
+  const photos = document.getElementById('signup-photos').files;
+
+  try {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('studentId', studentId);
+    for (const file of photos) {
+      formData.append('photos', file);
+    }
+
+    const response = await fetch('/signup', {
+      method: 'POST',
+      body: formData
+    });
+    const result = await response.text();
+    alert(result);
+  } catch (error) {
+    console.error('회원가입 오류:', error);
+  }
+});
+
+
+document.getElementById('login-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  // 로그인 처리 로직을 여기에 추가하세요
+});
+
+document.getElementById('signup-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  // 회원가입 처리 로직을 여기에 추가하세요
+});
+</script>
+</body>
+</html>
